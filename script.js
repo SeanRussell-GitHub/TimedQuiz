@@ -19,9 +19,7 @@ let allQuestions = [
         choices: ['73', '364', '10', '42'],
         correctAnswer: 2
     },
-    function() {
-        document.body.innerHTML="";
-        document.body.innerHTML="END OF QUIZ";
+        question: "Game Over"
     }
 ];
 
