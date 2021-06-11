@@ -1,3 +1,5 @@
+document.getElementById("score").innerHTML = localStorage.getItem('scoreBoard');
+document.getElementById('timedOut').style.display = "none";
 // array of questions and answers
 let allQuestions = [
     {
@@ -26,112 +28,124 @@ let allQuestions = [
 ];
 
 //global variables
+let scoreBoard = document.getElementById('score');
 let questionTitle = document.getElementById('questionTitle');
 let selectionList = document.getElementById('selectionList');
 let nextButton = document.getElementById('nextButton');
 let i = 0;
 let length1 = allQuestions.length;
 let answeredCorrect = 0;
-let seconds = 60;
-
+let seconds = 15;
+let score = 0;
 
 //start button to begin the game when player is ready
 startButton.onclick = function next() {
     $seconds = document.querySelector('#countdown');
     (function countdown() {
-        $seconds.textContent = seconds + ' second' + (seconds == 1 ? '' : 's')
-        if (seconds-- > 0) setTimeout(countdown, 1000)
+        $seconds.textContent = seconds + ' second' + (seconds == 1 ? '' : 's');
+        if (seconds-- > 0) setTimeout(countdown, 1000);
+        if (seconds < 0) {
+            noScore();
+        }
     })();
     document.getElementById("strtBttn").style.display = "none";
     document.getElementById("scndDiv").style.display = "block";
     populateQuestion(i); i++;
-
+    
     //starts the game AND submits the answer AND pops the next Q / A
     nextButton.onclick = function () {
         endGame();
         populateQuestion(i);
+        console.log(i);
+        if (i >= 4){
+            gameOver();
+        }
         i++;
     };
 };
-
-
 
 //populates the question frame from the Q/A array
 function populateQuestion() {
     var individualQuestion = allQuestions[i];
     questionTitle.innerText = individualQuestion.question;
-
     //resets choices list
-    selectionList.innerHTML = "";
-    for (key in individualQuestion.choices) {
-        var radioBtnName = "possibleAnswers";
-        var choiceText = individualQuestion.choices[key];
-        var createID = individualQuestion.choices[key];
-        selectionList.appendChild(createLi(radioBtnName, choiceText,createID));
-        // console.log(choiceText);
-        // console.log(key);
-    }
-}
-
-//creating each line item for the multiple choice answers
-function createLi(name, choiceText) {
-    var e = document.createElement('li');
-    var radioHtml = '<input type="checkbox" name="' + name + '" id="' + choiceText + '"';
-    radioHtml += '/>';
-    radioHtml += choiceText;
-    e.innerHTML = radioHtml;
-    console.log();
-    return e;
-}
-
-
-function endGame() {
-    let userChoices = document.getElementsByName('possibleAnswers');
-    let userChoice;
-    let checkAnswer = allQuestions[i-1].correctAnswer;
-    console.log(checkAnswer);
-    for (let i = 0; i < userChoices.length; i++) {
-        // console.log(userChoices[i]);
-        
-        if (userChoices[i].checked) {
-            userChoice = userChoices[i].id
-            console.log('checked: ', userChoice);
-            if(userChoice == checkAnswer){
-                console.log('hit if inside if')
-                answeredCorrect +1;
-                console.log(answeredCorrect);
-            } else{
-                // -time
-            }
-
+        selectionList.innerHTML = "";
+        // console.log(length1);
+        for (key in individualQuestion.choices) {
+            var radioBtnName = "possibleAnswers";
+            var choiceText = individualQuestion.choices[key];
+            var createID = individualQuestion.choices[key];
+            selectionList.appendChild(createLi(radioBtnName, choiceText,createID));
         }
-        // console.log(correctAnswer)
+    }
+    
+    //creating each line item for the multiple choice answers
+    function createLi(name, choiceText) {
+        var e = document.createElement('li');
+        var radioHtml = '<input type="checkbox" name="' + name + '" id="' + choiceText + '"';
+        radioHtml += '/>';
+        radioHtml += choiceText;
+        e.innerHTML = radioHtml;
+        console.log();
+        return e;
+    }
+    
+    
+    function endGame() {
+        let userChoices = document.getElementsByName('possibleAnswers');
+        let userChoice;
+        let checkAnswer = allQuestions[i-1].correctAnswer;
+        console.log(checkAnswer);
+        if (length1 > 5) {
+            gameOver();
+        }
+        for (let i = 0; i < userChoices.length; i++) {
+            if (userChoices[i].checked) {
+                userChoice = userChoices[i].id
+                console.log('checked: ', userChoice);
+                if(userChoice == checkAnswer){
+                    console.log('hit if inside if')
+                    answeredCorrect +1;
+                    console.log(answeredCorrect);
+                    score = seconds;
+                    console.log(score);
+                } else{
+                    seconds = seconds-5;
+                    score = seconds;
+                    console.log(score);
+                }
+            }
+        }
     }
 
-}
-// End game function -- if (seconds <=0) {
-//  endGame ()}
-// prompt for initials / show score / add initials and score to local storage 
+// sets up for game over    
+    function gameOver(seconds){
+        // document.getElementById("body").style.display = "";
+        document.getElementById("scndDiv").style.display = "none";
+        document.querySelector('#countdown').style.display = "none";
+        highScore();
+    }
+    
+// preparing for high score
+    function highScore (seconds){
+        console.log(score+1);
+        // prompt for initials / show score / add initials and score to local storage 
+        var initials = prompt('Enter your initials for high score:','AAA');
+        console.log(initials);
+        const scoreBoard = document.getElementById('score');
+        scoreBoard.textContent = " High score:  " + initials + "      =  " + score;
+        document.body.appendChild(scoreBoard); 
+        localStorage.setItem('scoreBoard',scoreBoard.textContent);
+        window.location.href = "file:///C:/Users/email/TimedQuiz/index.html";
+    }
 
-
-
-//saving the high score to local storage
-//needs work
-
-
-// function highScore(score) {
-//     var saved = 0;
-//     try { saved = parseFloat(localStorage.highScore); } catch (e) { saved = 0; }
-//     if (!(typeof score === 'undefined')) {
-//        try { score = parseFloat(score); } catch (e) { score = 0; }
-//        if (score>saved) {
-//          saved = score;
-//          localStorage.highScore = '' + score;
-//        }
-//     }
-//     if (isNaN(saved)) {
-//        saved = 0;
-//        localStorage.highScore = '0';
-//     }
-//     return saved;
-//  }
+    //saving the high score to local storage
+    function noScore () {
+        document.getElementById("timedOut").style.display = "block";
+        document.getElementById('questionTitle').style.display = "none";
+        document.getElementById("scndDiv").style.display = "none";
+        document.querySelector('#countdown').style.display = "none";
+        document.getElementById('selectionList').style.display = "none";
+       let timeOut = document.getElementById('timedOut');
+       timeOut.innerHTML += 'Timed Out ' + '<br>' + 'Game Over' + '<br>' + 'No Score for 0 seconds';
+    }
