@@ -136,7 +136,7 @@ function populateQuestion() {
         scoreBoard.textContent = " High score:  " + initials + "      =  " + score;
         document.body.appendChild(scoreBoard); 
         localStorage.setItem('scoreBoard',scoreBoard.textContent);
-        window.location.href = "file:///C:/Users/email/TimedQuiz/index.html";
+        window.location.href = "https://seanrussell-github.github.io/TimedQuiz/";
     }
 
     //saving the high score to local storage
