@@ -35,7 +35,7 @@ let nextButton = document.getElementById('nextButton');
 let i = 0;
 let length1 = allQuestions.length;
 let answeredCorrect = 0;
-let seconds = 15;
+let seconds = 30;
 let score = 0;
 
 //start button to begin the game when player is ready
