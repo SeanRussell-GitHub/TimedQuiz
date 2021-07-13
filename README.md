@@ -1,6 +1,10 @@
 # TimedQuiz
 
+deployed url:
 https://seanrussell-github.github.io/TimedQuiz/
+
+GitHub url:
+https://github.com/SeanRussell-GitHub/TimedQuiz.git
 
 class project making a timed quiz about javascript fundamentals
 Javascript, Cascading Style Sheet, and HTML were used to construct this project
